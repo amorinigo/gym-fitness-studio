@@ -22,6 +22,7 @@ const stripDebug   = require( 'gulp-strip-debug' );
 
 // PLUGINS
 const rename       = require( 'gulp-rename' );
+const sourcemaps   = require( 'gulp-sourcemaps' );
 const plumber      = require( 'gulp-plumber' );
 const options      = require( 'gulp-options' );
 const gulpif       = require( 'gulp-if' );
@@ -50,7 +51,8 @@ task( 'html', () => {
 } );
 
 task( 'sass', done => {
-	src( [ './src/scss/styles.scss' ] )
+	src( [ './src/scss/*.scss' ] )
+	.pipe( sourcemaps.init() )
 	.pipe( sass({
 		errLogToConsole: true,
 		outputStyle: 'compressed'
@@ -58,6 +60,7 @@ task( 'sass', done => {
 	.pipe( postcss(cssPlugins) )
 	.on( 'error', console.error.bind( console ) )
 	.pipe( rename( { suffix: '.min' } ) )
+	.pipe( sourcemaps.write( './' ) )
 	.pipe( dest( './dist/css/' ) )
 	.pipe( browserSync.stream() );
 	done();
@@ -72,7 +75,9 @@ task( 'js', done => {
 		.pipe( rename({ extname: '.min.js' }) )
 		.pipe( buffer() )
 		.pipe( gulpif( options.has( 'production' ), stripDebug() ) )
+		.pipe( sourcemaps.init({ loadMaps: true }) )
 		.pipe( uglify() )
+		.pipe( sourcemaps.write( '.' ) )
 		.pipe( dest( './dist/js/' ) )
 		.pipe( browserSync.stream() );
 	});
@@ -89,9 +94,9 @@ task( 'clean', () => {
 
 task( 'images', () => {
 
-	return src( './src/assets/images/*' )
+	return src( './src/assets/images/**/*.{jpg,jpeg,png,svg,gif,ico,webp}' )
 		.pipe( plumber() )
-		.pipe( dest( './dist/assets/images/' ) );
+		.pipe( dest( './dist/assets/' ) );
 
 } );
 
@@ -112,7 +117,7 @@ task( 'default', () => {
 
 	browserSync.init({ server: { baseDir: './dist/' } });
 	watch( './src/*.html',          series('html',   reload) );
-	watch( './src/scss/*.scss',     series('sass',   reload) );
+	watch( './src/scss/**/*.scss',     series('sass',   reload) );
 	watch( './src/js/*.js',         series('js',     reload) );
 	watch( './src/assets/images/*', series('images', reload) );
 	watch( './src/assets/fonts/*',  series('fonts',  reload) );

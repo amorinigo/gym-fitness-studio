@@ -1,0 +1,108 @@
+.footer {
+    
+    @include display-flex( center, space-evenly, column);
+    background: #000;
+    height: 300px;
+
+    .footer__copyright {
+        color: grey;
+        text-align: center;
+        padding: 0 5px;
+    }
+
+    .logo {
+
+        @include display-flex( center, space-between, row );
+
+        .logo-text {
+
+            margin-left: 25px;
+            text-transform: uppercase;
+
+            .logo-h4 {
+                color: #fff;
+                font-weight: 900;
+                font-size: 25px;
+            }
+
+            .logo-h5 {
+                color: var(--main-color);
+                font-size: 18px;
+                font-weight: lighter;
+            }
+            
+        }
+        
+    }
+    
+    .footer__icons { 
+    
+        display: flex;
+    
+        .footer__link {
+    
+            text-decoration: none;
+            @include button( 50px, 50px, 50%, #fff, var( --main-color ) );
+            @include display-flex();
+            color: var( --main-color );
+            margin-right: 10px;
+            &:last-child { margin-right: 0; }
+            position: relative;
+        
+            &:hover {
+                background-color: var( --main-color );
+                color: #fff;
+            }
+
+            &::after {
+                @include display-flex;
+                font-family: "Font Awesome 5 Brands";
+                font-size: 16px;
+                @include position-abs-top-left( 50%, 50% );
+                @include width-and-height;
+                transform: translate( -50%, -50% );
+            }
+        
+            &[href="https://twitter.com/"]::after {
+                content: '\f099';
+            }
+        
+            &[href="https://es-la.facebook.com/"]::after {
+                content: '\f39e';
+            }
+        
+            &[href="https://ar.pinterest.com/"]::after {
+                content: '\f231';
+            }
+        
+            &[href="https://www.instagram.com/"]::after {
+                content: '\f16d';
+            }
+        
+        }
+        
+    }
+    
+}
+
+// MEDIA QUERIES.
+@media( min-width: 950px ) {
+
+    .footer {
+        
+        height: 220px;
+        flex-direction: row;
+        transform: translateY(31px);
+
+        .footer__icons {
+
+            .footer__link {
+                @include width-and-height( 60px, 60px );
+                margin-right: 10px;
+            }
+            
+        }
+        
+    }
+
+}
